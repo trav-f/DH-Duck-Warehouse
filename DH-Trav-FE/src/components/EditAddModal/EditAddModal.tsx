@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Duck, DuckColor, DuckSize } from "../../models/Duck";
 import { useDucksContext } from "../../contexts/DucksService";
+import { ERROR_MESSAGES } from "../../constants/messages";
+import { DUCK_COLORS, DUCK_SIZES, DEFAULT_VALUES } from "../../constants/options";
 import "./EditAddModal.css";
 
 function EditAddModal({
@@ -11,17 +13,17 @@ function EditAddModal({
     onClose: () => void;
   }) {
     const { createDuck, updateDuck } = useDucksContext()
-    const [color, setColor] = useState<DuckColor>(selectedDuck?.color || 'Red');
-    const [size, setSize] = useState<DuckSize>(selectedDuck?.size || 'XLarge');
-    const [price, setPrice] = useState<number>(selectedDuck?.price || 0);
-    const [quantity, setQuantity] = useState<number>(selectedDuck?.quantity || 1);
+    const [color, setColor] = useState<DuckColor>(selectedDuck?.color || DEFAULT_VALUES.COLOR);
+    const [size, setSize] = useState<DuckSize>(selectedDuck?.size || DEFAULT_VALUES.SIZE);
+    const [price, setPrice] = useState<number>(selectedDuck?.price || DEFAULT_VALUES.PRICE);
+    const [quantity, setQuantity] = useState<number>(selectedDuck?.quantity || DEFAULT_VALUES.QUANTITY);
 
     const [error, setError] = useState<string | null>();
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       if (price <= 0 || quantity <= 0) {
-        setError("Price and Quantity must be positive numbers.");
+        setError(ERROR_MESSAGES.PRICE_QUANTITY_VALIDATION);
         return;
       }
 
@@ -47,7 +49,7 @@ function EditAddModal({
           <fieldset className="modal-fieldset">
             <legend>Choose a Color</legend>
             <div className={`modal-options-grid ${selectedDuck ? 'disabled' : ''}`}>
-              {(["Red", "Green", "Yellow", "Black"] as DuckColor[]).map((c) => (
+              {DUCK_COLORS.map((c) => (
                 <label key={c} className={`modal-option-label ${selectedDuck ? 'disabled' : ''}`}>
                   <input
                     type="radio"
@@ -68,9 +70,7 @@ function EditAddModal({
           <fieldset className="modal-fieldset">
             <legend>Choose a Size</legend>
             <div className={`modal-options-grid ${selectedDuck ? 'disabled' : ''}`}>
-              {(
-                ["XLarge", "Large", "Medium", "Small", "XSmall"] as DuckSize[]
-              ).map((s) => (
+              {DUCK_SIZES.map((s) => (
                 <label key={s} className={`modal-option-label ${selectedDuck ? 'disabled' : ''}`}>
                   <input
                     type="radio"

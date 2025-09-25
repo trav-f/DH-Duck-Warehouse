@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Duck } from '../models/Duck';
 import { useAppContext } from "./AppContext";
+import { SUCCESS_MESSAGES, ERROR_MESSAGES, OPERATION_DESCRIPTIONS } from '../constants/messages';
 
 const API_BASE_URL = 'http://localhost:3000';
 
@@ -47,7 +48,7 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
       const fetchedDucks: Duck[] = await response.json();
       setDucks(fetchedDucks);
     } catch (error) {
-      handleError(error, 'fetching ducks');
+      handleError(error, OPERATION_DESCRIPTIONS.FETCHING_DUCKS);
     } finally {
       setLoading(false);
     }
@@ -88,9 +89,9 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
         }
       }
 
-      showAlert('Duck created successfully', 'success');
+      showAlert(SUCCESS_MESSAGES.DUCK_CREATED, 'success');
     } catch (error) {
-      handleError(error, 'creating duck');
+      handleError(error, OPERATION_DESCRIPTIONS.CREATING_DUCK);
     } finally {
       await getDucks();
       setLoading(false);
@@ -113,9 +114,9 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      showAlert('Duck updated successfully', 'success');
+      showAlert(SUCCESS_MESSAGES.DUCK_UPDATED, 'success');
     } catch (error) {
-      handleError(error, 'updating duck');
+      handleError(error, OPERATION_DESCRIPTIONS.UPDATING_DUCK);
     } finally {
       await getDucks();
       setLoading(false);
@@ -137,9 +138,9 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      showAlert('Duck deleted successfully', 'success');
+      showAlert(SUCCESS_MESSAGES.DUCK_DELETED, 'success');
     } catch (error) {
-      handleError(error, 'deleting duck');
+      handleError(error, OPERATION_DESCRIPTIONS.DELETING_DUCK);
     } finally {
       await getDucks();
       setLoading(false);
@@ -162,6 +163,6 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
 
 export const useDucksContext = () => {
   const context = useContext(DucksContext);
-  if (!context) throw new Error("useDucksContext must be used inside DucksProvider");
+  if (!context) throw new Error(ERROR_MESSAGES.DUCKS_CONTEXT_ERROR);
   return context;
 };

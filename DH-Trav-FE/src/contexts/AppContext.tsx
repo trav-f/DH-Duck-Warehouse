@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { ERROR_MESSAGES } from "../constants/messages";
 
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
 
@@ -78,7 +79,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error("useAppContext must be used within an AppProvider");
+    throw new Error(ERROR_MESSAGES.APP_CONTEXT_ERROR);
   }
   return context;
 };
