@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Duck } from '../models/Duck';
+import { useAppContext } from "./AppContext";
 
 const API_BASE_URL = 'http://localhost:3000';
 
 type DucksContextType = {
   ducks: Duck[];
-  loading: boolean;
   error: string | null;
   getDucks: () => Promise<void>;
   createDuck: (duck: Omit<Duck, 'id' | 'deleted'>) => Promise<void>;
@@ -17,7 +17,7 @@ const DucksContext = createContext<DucksContextType | undefined>(undefined);
 
 export const DucksProvider = ({ children }: { children: ReactNode }) => {
   const [ducks, setDucks] = useState<Duck[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { setLoading, showAlert } = useAppContext();
   const [error, setError] = useState<string | null>(null);
 
   const baseUrl = `${API_BASE_URL}/ducks`;
@@ -26,6 +26,7 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
     const errorMessage = error instanceof Error ? error.message : `Unknown error during ${operation}`;
     console.error(`Error ${operation}:`, error);
     setError(errorMessage);
+    showAlert(errorMessage, 'error');
   };
 
   const getDucks = async (): Promise<void> => {
@@ -72,8 +73,6 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        return;
       } else {
         // create a new duck
         const response = await fetch(baseUrl, {
@@ -87,10 +86,9 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        return;
       }
 
+      showAlert('Duck created successfully', 'success');
     } catch (error) {
       handleError(error, 'creating duck');
     } finally {
@@ -115,6 +113,7 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      showAlert('Duck updated successfully', 'success');
     } catch (error) {
       handleError(error, 'updating duck');
     } finally {
@@ -138,6 +137,7 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      showAlert('Duck deleted successfully', 'success');
     } catch (error) {
       handleError(error, 'deleting duck');
     } finally {
@@ -149,7 +149,6 @@ export const DucksProvider = ({ children }: { children: ReactNode }) => {
   return (
     <DucksContext.Provider value={{
       ducks,
-      loading,
       error,
       getDucks,
       createDuck, 

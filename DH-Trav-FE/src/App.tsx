@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import ducky from './assets/ducky.png'
 import Header from './components/Header'
 import './App.css'
 import type { Duck } from './models/Duck'
-import AddEditModal from './components/EditAddModal'
+import AddEditModal from './components/EditAddModal/EditAddModal'
 import TextButton from './components/TextButton'
-import DeleteModal from './components/DeleteModal'
-import { useDucksContext } from './services/DucksService'
+import DeleteModal from './components/DeleteModal/DeleteModal'
+import LoadingModal from './components/LoadingModal/LoadingModal'
+import ToastContainer from './components/Toast/ToastContainer'
+import { useDucksContext } from './contexts/DucksService'
+import { useAppContext } from './contexts/AppContext'
 
 const ModalState = {
   Add: 'add',
@@ -20,20 +23,24 @@ function App() {
   const { ducks, getDucks } = useDucksContext()
   const [selectedDuck, setSelectedDuck] = useState<Duck | null>(null)
   const [modalState, setModalState] = useState<ModalStateType | null>(null);
+  const { isLoading } = useAppContext();
+
 
   useEffect(() => {
     getDucks();
   }, []);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setModalState(null)
     setSelectedDuck(null)
-  }
+  }, []);
 
   return (
     <div className='warehouse'>
       {(modalState === ModalState.Add || modalState === ModalState.Edit) && <AddEditModal selectedDuck={selectedDuck} onClose={closeModal} />}
       {(modalState === ModalState.Delete && selectedDuck) && <DeleteModal selectedDuck={selectedDuck} onClose={closeModal} />}
+      {isLoading && <LoadingModal />}
+      <ToastContainer />
       <Header />
       <div className='title'>
         <h2>Warehouse Management</h2>
