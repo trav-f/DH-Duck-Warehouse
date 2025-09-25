@@ -69,3 +69,40 @@
   background-color: #2563eb;
   color: white;
 }
+
+/* Validation Styles */
+.modal-number-input.error {
+  border: 2px solid #ef4444;
+  background-color: #fef2f2;
+}
+
+.modal-options-grid.error {
+  border: 2px solid #ef4444;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: #fef2f2;
+}
+
+.modal-error {
+  color: #ef4444;
+  font-size: 14px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.modal-error.hidden {
+  display: none;
+}
+
+/* Focus states for better UX */
+.modal-number-input:focus {
+  outline: none;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modal-number-input.error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}

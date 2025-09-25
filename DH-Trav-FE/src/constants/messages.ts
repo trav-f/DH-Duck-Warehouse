@@ -12,6 +12,18 @@ export const ERROR_MESSAGES = {
   DUCKS_CONTEXT_ERROR: 'useDucksContext must be used inside DucksProvider',
 } as const;
 
+// Validation Messages
+export const VALIDATION_MESSAGES = {
+  PRICE_REQUIRED: 'Price is required',
+  PRICE_POSITIVE: 'Price must be greater than 0',
+  PRICE_MAX: 'Price cannot exceed $999.99',
+  QUANTITY_REQUIRED: 'Quantity is required',
+  QUANTITY_POSITIVE: 'Quantity must be greater than 0',
+  QUANTITY_MAX: 'Quantity cannot exceed 999',
+  COLOR_REQUIRED: 'Please select a color',
+  SIZE_REQUIRED: 'Please select a size',
+} as const;
+
 // Operation Descriptions
 export const OPERATION_DESCRIPTIONS = {
   FETCHING_DUCKS: 'fetching ducks',

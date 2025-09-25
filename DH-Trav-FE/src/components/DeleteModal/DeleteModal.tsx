@@ -28,7 +28,7 @@ function DeleteModal({
           <div className="delete-modal-info">
             <p><strong>Color:</strong> {selectedDuck.color}</p>
             <p><strong>Size:</strong> {selectedDuck.size}</p>
-            <p><strong>Price:</strong> ${selectedDuck.price}</p>
+            <p><strong>Price:</strong> ${selectedDuck.price.toFixed(2)}</p>
             <p><strong>Quantity:</strong> {selectedDuck.quantity}</p>
           </div>
           <p className="delete-modal-warning">

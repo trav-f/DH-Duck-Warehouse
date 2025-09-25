@@ -13,3 +13,16 @@ export const DEFAULT_VALUES = {
   PRICE: 0,
   QUANTITY: 1,
 } as const;
+
+// Validation Rules
+export const VALIDATION_RULES = {
+  PRICE: {
+    MIN: 0.01,
+    MAX: 999.99,
+    DECIMAL_PLACES: 2,
+  },
+  QUANTITY: {
+    MIN: 1,
+    MAX: 999,
+  },
+} as const;
