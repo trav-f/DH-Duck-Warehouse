@@ -1,0 +1,71 @@
+/* EditAddModal Styles */
+
+.modal-fieldset {
+  margin-bottom: 1rem;
+}
+
+.modal-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.modal-options-grid.disabled {
+  opacity: 0.6;
+}
+
+.modal-option-label {
+  cursor: pointer;
+}
+
+.modal-option-label.disabled {
+  cursor: not-allowed;
+}
+
+.modal-option-input {
+  cursor: pointer;
+}
+
+.modal-option-input.disabled {
+  cursor: not-allowed;
+}
+
+.modal-form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.modal-form-label.quantity-label {
+  margin-bottom: 1rem;
+}
+
+.modal-number-input {
+  margin-left: 8px;
+  width: 50px;
+}
+
+.modal-error {
+  color: red;
+  font-size: 14px;
+  height: 14px;
+}
+
+.modal-error.hidden {
+  display: none;
+}
+
+.modal-button-container {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.modal-button {
+  margin: 4px;
+}
+
+.modal-button.primary {
+  background-color: #2563eb;
+  color: white;
+}

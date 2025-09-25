@@ -1,6 +1,7 @@
 import { useState } from "react";
-import type { Duck } from "../models/Duck";
-import { useDucksContext } from "../services/DucksService";
+import type { Duck } from "../../models/Duck";
+import { useDucksContext } from "../../contexts/DucksService";
+import "./DeleteModal.css";
 
 function DeleteModal({
   selectedDuck,
@@ -22,37 +23,23 @@ function DeleteModal({
     <div className="modal-backdrop">
       <div className="modal">
         <h2>Delete Duck</h2>
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="delete-modal-content">
           <p>Are you sure you want to delete this duck?</p>
-          <div style={{ 
-            padding: "1rem", 
-            backgroundColor: "#f5f5f5", 
-            borderRadius: "4px",
-            margin: "1rem 0"
-          }}>
+          <div className="delete-modal-info">
             <p><strong>Color:</strong> {selectedDuck.color}</p>
             <p><strong>Size:</strong> {selectedDuck.size}</p>
             <p><strong>Price:</strong> ${selectedDuck.price}</p>
             <p><strong>Quantity:</strong> {selectedDuck.quantity}</p>
           </div>
-          <p style={{ color: "#666", fontSize: "14px" }}>
+          <p className="delete-modal-warning">
             This action cannot be undone.
           </p>
         </div>
 
-        <div style={{ marginTop: "10px", width: "100%", display: "flex", flexDirection: "row-reverse" }}>
+        <div className="delete-modal-button-container">
           <button 
             type="button" 
-            style={{ 
-              margin: '4px',
-              backgroundColor: '#dc3545',
-              color: 'white',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              cursor: isDeleting ? 'not-allowed' : 'pointer',
-              opacity: isDeleting ? 0.6 : 1
-            }}
+            className="delete-modal-button danger"
             onClick={handleDelete}
             disabled={isDeleting}
           >
@@ -60,7 +47,7 @@ function DeleteModal({
           </button>
           <button 
             type="button" 
-            style={{ margin: '4px' }} 
+            className="delete-modal-button"
             onClick={onClose}
             disabled={isDeleting}
           >

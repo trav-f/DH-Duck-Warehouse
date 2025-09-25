@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Duck, DuckColor, DuckSize } from "../models/Duck";
-import { useDucksContext } from "../services/DucksService";
+import type { Duck, DuckColor, DuckSize } from "../../models/Duck";
+import { useDucksContext } from "../../contexts/DucksService";
+import "./EditAddModal.css";
 
 function EditAddModal({
     selectedDuck,
@@ -43,18 +44,11 @@ function EditAddModal({
         <h2>{selectedDuck ? "Edit" : "Add"} Duck</h2>
         <form onSubmit={handleSubmit}>
           {/* Colors */}
-          <fieldset style={{ marginBottom: "1rem" }}>
+          <fieldset className="modal-fieldset">
             <legend>Choose a Color</legend>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "8px",
-                opacity: selectedDuck ? 0.6 : 1,
-              }}
-            >
+            <div className={`modal-options-grid ${selectedDuck ? 'disabled' : ''}`}>
               {(["Red", "Green", "Yellow", "Black"] as DuckColor[]).map((c) => (
-                <label key={c} style={{ cursor: selectedDuck ? 'not-allowed' : 'pointer' }}>
+                <label key={c} className={`modal-option-label ${selectedDuck ? 'disabled' : ''}`}>
                   <input
                     type="radio"
                     name="color"
@@ -62,7 +56,7 @@ function EditAddModal({
                     checked={color === c}
                     onChange={() => setColor(c)}
                     disabled={!!selectedDuck}
-                    style={{ cursor: selectedDuck ? 'not-allowed' : 'pointer' }}
+                    className={`modal-option-input ${selectedDuck ? 'disabled' : ''}`}
                   />
                   {c}
                 </label>
@@ -71,20 +65,13 @@ function EditAddModal({
           </fieldset>
 
           {/* Sizes */}
-          <fieldset style={{ marginBottom: "1rem" }}>
+          <fieldset className="modal-fieldset">
             <legend>Choose a Size</legend>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "8px",
-                opacity: selectedDuck ? 0.6 : 1,
-              }}
-            >
+            <div className={`modal-options-grid ${selectedDuck ? 'disabled' : ''}`}>
               {(
                 ["XLarge", "Large", "Medium", "Small", "XSmall"] as DuckSize[]
               ).map((s) => (
-                <label key={s} style={{ cursor: selectedDuck ? 'not-allowed' : 'pointer' }}>
+                <label key={s} className={`modal-option-label ${selectedDuck ? 'disabled' : ''}`}>
                   <input
                     type="radio"
                     name="size"
@@ -92,7 +79,7 @@ function EditAddModal({
                     checked={size === s}
                     onChange={() => setSize(s)}
                     disabled={!!selectedDuck}
-                    style={{ cursor: selectedDuck ? 'not-allowed' : 'pointer' }}
+                    className={`modal-option-input ${selectedDuck ? 'disabled' : ''}`}
                   />
                   {s}
                 </label>
@@ -100,33 +87,33 @@ function EditAddModal({
             </div>
           </fieldset>
 
-          <label style={{ display: "block", marginBottom: "0.5rem" }}>
+          <label className="modal-form-label">
             Price ($):
             <input
               type="number"
               value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
-              style={{ marginLeft: "8px", width: '50px' }}
+              className="modal-number-input"
             />
           </label>
 
-          <label style={{ display: "block", marginBottom: "1rem" }}>
+          <label className="modal-form-label quantity-label">
             Quantity:
             <input
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
-              style={{ marginLeft: "8px", width: '50px' }}
+              className="modal-number-input"
             />
           </label>
 
-          <div className={`modal-error ${!error ? 'hidden' : ''}`} style={{ color: 'red', fontSize: "14px", height: '14px'}}>
+          <div className={`modal-error ${!error ? 'hidden' : ''}`}>
             {error}
           </div>
 
-          <div style={{ marginTop: "10px", width: "100%", display: "flex", flexDirection: "row-reverse"}}>
-            <button type="submit" style={{ margin: '4px', backgroundColor: '#2563eb', color: 'white'}}>{selectedDuck ? "Save" : "Add"}</button>
-            <button type="button" style={{ margin: '4px'}} onClick={onClose}>
+          <div className="modal-button-container">
+            <button type="submit" className="modal-button primary">{selectedDuck ? "Save" : "Add"}</button>
+            <button type="button" className="modal-button" onClick={onClose}>
               Cancel
             </button>
           </div>
