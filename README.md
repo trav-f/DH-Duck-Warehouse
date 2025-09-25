@@ -11,7 +11,7 @@ npm run dev
 ```
 
 ### Back-end
-To run the server:
+To run the server: (mongo must be running in your local env)
 ```
 cd ./DH-Trav-BE
 npm i
