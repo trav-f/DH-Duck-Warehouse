@@ -5,60 +5,92 @@ import {
   PACKAGE_TYPES
 } from "../helpers/helper.js";
 
+// Pricing constants
+const QUANTITY_DISCOUNT_THRESHOLD = 100;
+const QUANTITY_DISCOUNT_RATE = 0.8;
+
+const PACKAGE_TYPE_MULTIPLIERS = {
+  [PACKAGE_TYPES.WOOD]: 0.05,
+  [PACKAGE_TYPES.PLASTIC]: 0.1,
+  [PACKAGE_TYPES.CARDBOARD]: -0.01
+};
+
+const DESTINATION_MULTIPLIERS = {
+  'US': 0.18,
+  'Bolivia': 0.13,
+  'India': 0.19,
+  'default': 0.15
+};
+
+const SHIPPING_METHOD_COSTS = {
+  [SHIPPING_METHODS.SEA]: { fixed: 400, perUnit: 0 },
+  [SHIPPING_METHODS.LAND]: { fixed: 0, perUnit: 10 },
+  [SHIPPING_METHODS.AIR]: { fixed: 0, perUnit: 30 }
+};
+
+const AIR_SHIPPING_DISCOUNT_THRESHOLD = 1000;
+const AIR_SHIPPING_DISCOUNT_RATE = 0.15;
+
 function toDollars(amount) {
   return `$${amount.toFixed(2)}`;
 }
 
 const calculateTotalCost = (price, quantity, packagingMaterials, shippingMethod, destination, packageType) => {
   const baseCost = price * quantity;
-  var runningTotal = baseCost;
-  const modifiers = [ { amount: toDollars(baseCost), description: "Base cost" } ]; // { amount: string, description: string }[]
+  let runningTotal = baseCost;
+  const modifiers = [{ amount: toDollars(baseCost), description: "Base cost" }];
 
-  if (quantity > 100) {
-    runningTotal = 0.8 * baseCost;
-    modifiers.push({ amount: toDollars(0.8 * baseCost), description: "Quantity discount" });
+  // Apply quantity discount
+  if (quantity > QUANTITY_DISCOUNT_THRESHOLD) {
+    runningTotal = QUANTITY_DISCOUNT_RATE * baseCost;
+    modifiers.push({ 
+      amount: toDollars(QUANTITY_DISCOUNT_RATE * baseCost), 
+      description: "Quantity discount" 
+    });
   }
 
-  // Adjust price based on package type
-  if (packageType === PACKAGE_TYPES.WOOD) {
-    runningTotal += 0.05 * baseCost;
-    modifiers.push({ amount: toDollars(0.05 * baseCost), description: "Package type cost" });
-  } else if (packageType === PACKAGE_TYPES.PLASTIC) {
-    runningTotal += 0.1 * baseCost;
-    modifiers.push({ amount: toDollars(0.1 * baseCost), description: "Package type cost" });
-  } else { // packageType === PACKAGE_TYPES.CARDBOARD
-    runningTotal -= 0.01 * baseCost;
-    modifiers.push({ amount: toDollars(0.01 * baseCost), description: "Package type discount" });
+  // Apply package type multiplier
+  const packageMultiplier = PACKAGE_TYPE_MULTIPLIERS[packageType];
+  if (packageMultiplier !== undefined) {
+    const packageAdjustment = packageMultiplier * baseCost;
+    runningTotal += packageAdjustment;
+    const description = packageMultiplier > 0 ? "Package type cost" : "Package type discount";
+    modifiers.push({ 
+      amount: toDollars(Math.abs(packageAdjustment)), 
+      description 
+    });
   }
 
-  if (destination === 'US') {
-    runningTotal += 0.18 * baseCost;
-    modifiers.push({ amount: toDollars(0.18 * baseCost), description: "Destination cost" });
-  } else if (destination === 'Bolivia') {
-    runningTotal += 0.13 * baseCost;
-    modifiers.push({ amount: toDollars(0.13 * baseCost), description: "Destination cost" });
-  } else if (destination === 'India') {
-    runningTotal += 0.19 * baseCost;
-    modifiers.push({ amount: toDollars(0.19 * baseCost), description: "Destination cost" });
-  } else {
-    runningTotal += 0.15 * baseCost;
-    modifiers.push({ amount: toDollars(0.15 * baseCost), description: "Destination cost" });
-  }
-  
-  if (shippingMethod === SHIPPING_METHODS.SEA) {
-    runningTotal += 400;
-    modifiers.push({ amount: toDollars(400), description: "Shipping method cost" });
-  } else if (shippingMethod === SHIPPING_METHODS.LAND) {
-    runningTotal += 10 * quantity;
-    modifiers.push({ amount: toDollars(10 * quantity), description: "Shipping method cost" });
-  } else { // shippingMethod === SHIPPING_METHODS.AIR
-    runningTotal += 30 * quantity;
-    modifiers.push({ amount: toDollars(30 * quantity), description: "Shipping method cost" });
-    if (quantity > 1000) {
-      runningTotal -= 0.15 * baseCost;
-      modifiers.push({ amount: toDollars(0.15 * baseCost), description: "Shipping method discount" });
+  // Apply destination multiplier
+  const destinationMultiplier = DESTINATION_MULTIPLIERS[destination] || DESTINATION_MULTIPLIERS.default;
+  const destinationCost = destinationMultiplier * baseCost;
+  runningTotal += destinationCost;
+  modifiers.push({ 
+    amount: toDollars(destinationCost), 
+    description: "Destination cost" 
+  });
+
+  // Apply shipping method costs
+  const shippingCosts = SHIPPING_METHOD_COSTS[shippingMethod];
+  if (shippingCosts) {
+    const shippingCost = shippingCosts.fixed + (shippingCosts.perUnit * quantity);
+    runningTotal += shippingCost;
+    modifiers.push({ 
+      amount: toDollars(shippingCost), 
+      description: "Shipping method cost" 
+    });
+
+    // Apply air shipping discount for large quantities
+    if (shippingMethod === SHIPPING_METHODS.AIR && quantity > AIR_SHIPPING_DISCOUNT_THRESHOLD) {
+      const discount = AIR_SHIPPING_DISCOUNT_RATE * baseCost;
+      runningTotal -= discount;
+      modifiers.push({ 
+        amount: toDollars(discount), 
+        description: "Shipping method discount" 
+      });
     }
   }
+
   return {
     packageType,
     protectionType: packagingMaterials,
